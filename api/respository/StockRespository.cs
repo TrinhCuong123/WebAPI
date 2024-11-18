@@ -8,11 +8,11 @@ using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace api.respository{
-    public class StockRespository : IStockRepository
+namespace api.Repository{
+    public class StockRepository : IStockRepository
     {
       private readonly ApplicationDBContext _context;
-      public StockRespository(ApplicationDBContext context){
+      public StockRepository(ApplicationDBContext context){
         _context = context;
       }
 
