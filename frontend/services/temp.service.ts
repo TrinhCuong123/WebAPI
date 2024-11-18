@@ -5,13 +5,14 @@ const BASE_URL = 'http://localhost:5279/api/stock'
 
 class _TempService {
   async list() {
+    console.log(111);
     const response = await $api<RestData<TEMPDTO[]>>(
         `${BASE_URL}`,
         {
             method: 'GET',
         },
     );
-
+    console.log(response)
     if (response && response.status) {
         return response.data;
     }
@@ -29,4 +30,4 @@ class _TempService {
   }
 }
 const TempService = new _TempService();
-export {TempService}
+export default TempService;
