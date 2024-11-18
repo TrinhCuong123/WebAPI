@@ -1,13 +1,11 @@
 import type { RestData, RestBase } from '~/models/base-response.model'
 import type { TEMPDTO } from '~/models/request/tempDTO.model.ts'
 
-const BASE_URL = 'http://localhost:5279/api/stock'
-
 class _TempService {
   async list() {
     console.log(111);
-    const response = await $api<RestData<TEMPDTO[]>>(
-        `${BASE_URL}`,
+    const response = await $fetch<RestData<TEMPDTO[]>>(
+        `/api/stock`,
         {
             method: 'GET',
         },
