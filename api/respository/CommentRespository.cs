@@ -18,5 +18,10 @@ namespace api.Repository{
     public Task<List<Comment>> GetAllAsync(){
       return _context.Comment.ToListAsync();
     }
+
+    public Task<Comment?> GetByIDAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
   }
 }

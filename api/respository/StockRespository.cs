@@ -16,10 +16,10 @@ namespace api.Repository{
         _context = context;
       }
 
-      public Task<List<Stock>> GetALLAsync()
+      public async Task<List<Stock>> GetALLAsync()
       {
           // throw new NotImplementedException();
-          return _context.Stock.ToListAsync();
+          return await _context.Stock.Include(c => c.Comments).ToListAsync();
       }
 
       public async Task<Stock?> GetByIDAsync(int id)
