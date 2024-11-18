@@ -1,0 +1,40 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using api.Data;
+using api.DTOs.Stock;
+using api.Mappers;
+using Microsoft.AspNetCore.Mvc;
+
+namespace api.Controllers{
+    [Route("api/stock")]
+    [ApiController]
+  public class StrockController: ControllerBase{
+    private readonly ApplicationDBContext _context;
+    public StrockController(ApplicationDBContext context){
+      _context = context;
+    }
+
+    [HttpGet]
+    public IActionResult GetAll(){
+      var stocks = _context.Stock.ToList().Select(s => s.ToStockDto());
+      return Ok(stocks);
+    }
+
+    [HttpGet("{id}")]
+    public IActionResult GetById([FromRoute] int id){
+      var stocks = _context.Stock.Find(id);
+      if (stocks == null) return NotFound();
+      return Ok(stocks.ToStockDto());
+    }
+
+    [HttpPost]
+    public IActionResult Create([FromBody] CreateStockRequestDto stockDto){
+      var stockModel = stockDto.ToStockFromCreateDTO();
+      _context.Stock.Add(stockModel);
+      _context.SaveChanges();
+      return CreatedAtAction(nameof(GetById), new { id=stockModel.ID }, stockModel.ToStockDto());
+    }    
+  }
+}
