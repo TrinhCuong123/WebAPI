@@ -35,6 +35,31 @@ namespace api.Controllers{
       _context.Stock.Add(stockModel);
       _context.SaveChanges();
       return CreatedAtAction(nameof(GetById), new { id=stockModel.ID }, stockModel.ToStockDto());
-    }    
+    }
+
+    [HttpPut]
+    [Route("{id}")]
+    public IActionResult Update([FromRoute] int id, [FromBody]  UpdateStockRequestDto updateDto){
+      var stockModel = _context.Stock.FirstOrDefault(x => x.ID == id);
+      if(stockModel == null) return NotFound();
+        stockModel.symbol = updateDto.symbol;
+        stockModel.companyName = updateDto.companyName;
+        stockModel.Purchase = updateDto.Purchase;
+        stockModel.LastDiv = updateDto.LastDiv;
+        stockModel.Industry = updateDto.Industry;
+        stockModel.MarketCap = updateDto.MarketCap;
+        _context.SaveChanges();
+        return Ok(stockModel.ToStockDto());
+    }
+
+    [HttpDelete]
+    [Route("{id}")]
+    public IActionResult Delete([FromRoute] int id){
+      var stockModel = _context.Stock.FirstOrDefault(x => x.ID == id);
+      if(stockModel == null) return NotFound();
+      _context.Stock.Remove(stockModel);
+      _context.SaveChanges();
+      return NoContent();
+    }
   }
 }
