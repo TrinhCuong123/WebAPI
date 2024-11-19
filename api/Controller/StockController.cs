@@ -10,8 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers{
-    [Route("api/stock")]
-    [ApiController]
+  [Route("api/stock")]
+  [ApiController]
   public class StockController: ControllerBase{
     private readonly ApplicationDBContext _context;
     private readonly IStockRepository _stockRespo;
@@ -34,7 +34,7 @@ namespace api.Controllers{
         return Ok(stocks);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById([FromRoute] int id){
       var stocks = await _stockRespo.GetByIDAsync(id);
       if (stocks == null) return NotFound();
@@ -49,7 +49,7 @@ namespace api.Controllers{
     }
 
     [HttpPut]
-    [Route("{id}")]
+    [Route("{id:int}")]
     public async Task<IActionResult> Update([FromRoute] int id, [FromBody]  UpdateStockRequestDto updateDto){
       var stockModel = await _stockRespo.UpdateAsync(id, updateDto);
       if(stockModel == null) return NotFound();

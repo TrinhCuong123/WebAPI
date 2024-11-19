@@ -1,13 +1,17 @@
-<template>
-  <div>
-    <h1>Xin chào</h1>
-  </div>
-</template>
 <script setup>
 import TempService from '~/services/temp.service';
+const { data: items, error } = await useAsyncData('tempData',() => TempService.list());
 
-
-console.log(1);
-const { data: getListTemp } = await useAsyncData('getListTemp', () => TempService.list());
-console.log(getListTemp);
+if (error) {
+  console.error('Error fetching data:', error);
+}
 </script>
+
+<template>
+  <div>
+    <ul v-if="items">
+      <li v-for="item in items" :key="item.id">{{ item.name }}</li>
+    </ul>
+    <p v-else>Loading...</p>
+  </div>
+</template>

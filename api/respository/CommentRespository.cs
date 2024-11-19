@@ -23,5 +23,28 @@ namespace api.Repository{
     {
         throw new NotImplementedException();
     }
+
+    public async Task<Comment> CreateAsync(Comment commentModel){
+      await _context.Comment.AddAsync(commentModel);
+      await _context.SaveChangesAsync();
+      return commentModel;
+    }
+
+    public async Task<Comment?> UpdateAsync(int id, Comment commentModel){
+      var existsComment = await _context.Comment.FindAsync(id);
+      if (existsComment == null) return null;
+      existsComment.Title = commentModel.Title;
+      existsComment.Content = commentModel.Content;
+      await _context.SaveChangesAsync();
+      return existsComment;
+    }
+
+    public async Task<Comment?> DeleteAsync(int id){
+      var commentModel = await _context.Comment.FirstOrDefaultAsync(x => x.Id == id);
+      if (commentModel == null) return null;
+      _context.Comment.Remove(commentModel);
+      await _context.SaveChangesAsync();
+      return commentModel;
+    }
   }
 }
