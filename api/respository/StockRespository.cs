@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
 using api.DTOs.Stock;
+using api.helpers;
 using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,26 @@ namespace api.Repository{
         _context = context;
       }
 
-      public async Task<List<Stock>> GetALLAsync()
+      public async Task<List<Stock>> GetALLAsync(QueryObject query)
+      {
+          // throw new NotImplementedException();
+          var stocks = _context.Stock.Include(c => c.Comments).AsQueryable();
+          if (!string.IsNullOrWhiteSpace(query.CompanyName)){
+            stocks = stocks.Where(c => c.companyName.Contains(query.CompanyName));
+          }
+          if (!string.IsNullOrWhiteSpace(query.Symbol)){
+            stocks = stocks.Where(s => s.symbol.Contains(query.Symbol));
+          }
+          if (!string.IsNullOrWhiteSpace(query.SortBy)){
+            if(query.SortBy.Equals("Symbol", StringComparison.OrdinalIgnoreCase))
+              stocks = query.IsDecsending ? stocks.OrderByDescending(s => s.symbol) : stocks.OrderBy(s => s.symbol);
+          }
+
+          var skipNumber = (query.pageNumber - 1) * query.pageSize;
+          return await stocks.Skip(skipNumber).Take(query.pageSize).ToListAsync();
+      }
+
+      public async Task<List<Stock>> GetALLAsync1()
       {
           // throw new NotImplementedException();
           return await _context.Stock.Include(c => c.Comments).ToListAsync();

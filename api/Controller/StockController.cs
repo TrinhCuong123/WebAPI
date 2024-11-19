@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
 using api.DTOs.Stock;
+using api.helpers;
 using api.Interfaces;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
@@ -27,9 +28,17 @@ namespace api.Controllers{
     // }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] QueryObject query)
     {
-        var stocks = await _stockRespo.GetALLAsync();;
+        var stocks = await _stockRespo.GetALLAsync(query);;
+        var stockDto = stocks.Select(s => s.ToStockDto());
+        return Ok(stocks);
+    }
+
+    [HttpGet("GetFuLLData")]
+    public async Task<IActionResult> GetAll1()
+    {
+        var stocks = await _stockRespo.GetALLAsync1();;
         var stockDto = stocks.Select(s => s.ToStockDto());
         return Ok(stocks);
     }
