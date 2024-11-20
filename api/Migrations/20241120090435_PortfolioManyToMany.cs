@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace api.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class PortfolioManyToMany : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -53,7 +53,7 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Stock",
+                name: "Stocks",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
@@ -67,7 +67,7 @@ namespace api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Stock", x => x.ID);
+                    table.PrimaryKey("PK_Stocks", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -177,7 +177,7 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comment",
+                name: "Comments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -189,12 +189,36 @@ namespace api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Comment", x => x.Id);
+                    table.PrimaryKey("PK_Comments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comment_Stock_StockID",
+                        name: "FK_Comments_Stocks_StockID",
                         column: x => x.StockID,
-                        principalTable: "Stock",
+                        principalTable: "Stocks",
                         principalColumn: "ID");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Postfolios",
+                columns: table => new
+                {
+                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    StockID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Postfolios", x => new { x.AppUserId, x.StockID });
+                    table.ForeignKey(
+                        name: "FK_Postfolios_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Postfolios_Stocks_StockID",
+                        column: x => x.StockID,
+                        principalTable: "Stocks",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -202,8 +226,8 @@ namespace api.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "0f751577-2a88-4c6f-afaa-8f97c6f6a898", null, "User", "USER" },
-                    { "177b8db2-f74a-4a76-aa36-49b8c0285bab", null, "Admin", "ADMIN" }
+                    { "4c90f31b-fd6d-410d-b5d9-a619d1f56b3f", null, "Admin", "ADMIN" },
+                    { "e97577bd-29fd-4d3b-bbf5-b5c63fb0e674", null, "User", "USER" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -246,8 +270,13 @@ namespace api.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_StockID",
-                table: "Comment",
+                name: "IX_Comments_StockID",
+                table: "Comments",
+                column: "StockID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Postfolios_StockID",
+                table: "Postfolios",
                 column: "StockID");
         }
 
@@ -270,7 +299,10 @@ namespace api.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Comment");
+                name: "Comments");
+
+            migrationBuilder.DropTable(
+                name: "Postfolios");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -279,7 +311,7 @@ namespace api.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Stock");
+                name: "Stocks");
         }
     }
 }
